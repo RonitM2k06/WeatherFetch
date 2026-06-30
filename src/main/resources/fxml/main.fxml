@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.web.WebView?>
+
+<StackPane fx:id="rootPane" stylesheets="@../css/style.css" styleClass="root-pane" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.weatherfetch.controller.MainController">
+    
+    <BorderPane fx:id="mainLayout">
+        
+        <!-- SIDE NAVIGATION -->
+        <left>
+            <VBox styleClass="side-nav" spacing="20">
+                <padding>
+                    <Insets top="30" right="15" bottom="30" left="15"/>
+                </padding>
+                
+                <!-- App Icon / Title -->
+                <HBox alignment="CENTER_LEFT" spacing="10" styleClass="nav-brand">
+                    <Label text="🌤" styleClass="brand-icon"/>
+                    <Label text="WeatherFetch" styleClass="brand-text"/>
+                </HBox>
+                
+                <Region VBox.vgrow="ALWAYS"/>
+                
+                <!-- Navigation Items -->
+                <VBox spacing="10">
+                    <Button fx:id="navDashboard" text="Dashboard" styleClass="nav-btn, nav-btn-active" maxWidth="Infinity"/>
+                    <Button fx:id="navSearch" text="Search" styleClass="nav-btn" maxWidth="Infinity"/>
+                    <Button fx:id="navMap" text="Map" styleClass="nav-btn" maxWidth="Infinity"/>
+                    <Button fx:id="navSettings" text="Settings" styleClass="nav-btn" maxWidth="Infinity"/>
+                </VBox>
+                
+                <Region VBox.vgrow="ALWAYS"/>
+                
+                <!-- Theme Toggle -->
+                <Button fx:id="themeToggleBtn" text="🌙 Dark Mode" styleClass="nav-btn" maxWidth="Infinity"/>
+                
+            </VBox>
+        </left>
+        
+        <!-- MAIN CONTENT AREA -->
+        <center>
+            <StackPane>
+                <!-- Dashboard View -->
+                <ScrollPane fx:id="dashboardView" fitToWidth="true" styleClass="dashboard-scroll">
+                    <VBox spacing="20" styleClass="dashboard-container">
+                        <padding>
+                            <Insets top="30" right="40" bottom="30" left="40"/>
+                        </padding>
+                        
+                        <!-- Header Search Bar & Location -->
+                        <HBox alignment="CENTER_LEFT" spacing="20">
+                            <VBox>
+                                <Label fx:id="locationNameLabel" text="Loading..." styleClass="location-title"/>
+                                <Label fx:id="currentDateLabel" text="Loading..." styleClass="date-subtitle"/>
+                            </VBox>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <TextField fx:id="searchField" promptText="Search city..." styleClass="search-field" prefWidth="250"/>
+                            <Button fx:id="searchBtn" text="🔍" styleClass="icon-btn"/>
+                            <Button fx:id="locationBtn" text="📍" styleClass="icon-btn"/>
+                        </HBox>
+                        
+                        <!-- Top Row: Main Weather Card & Air Quality -->
+                        <HBox spacing="20">
+                            <!-- Main Weather Card -->
+                            <VBox styleClass="glass-card, current-weather-card" HBox.hgrow="ALWAYS" spacing="10">
+                                <HBox alignment="CENTER_LEFT" spacing="15">
+                                    <Label fx:id="weatherIconLabel" text="☁" styleClass="weather-icon-large"/>
+                                    <VBox>
+                                        <Label fx:id="temperatureLabel" text="--°" styleClass="temperature-huge"/>
+                                        <Label fx:id="weatherDescLabel" text="Loading..." styleClass="weather-desc"/>
+                                    </VBox>
+                                </HBox>
+                            </VBox>
+                            
+                            <!-- Air Quality Card -->
+                            <VBox styleClass="glass-card, aqi-card" HBox.hgrow="ALWAYS" spacing="10" minWidth="250">
+                                <Label text="Air Quality Index" styleClass="card-title"/>
+                                <HBox alignment="CENTER" spacing="10">
+                                    <Label fx:id="aqiValueLabel" text="--" styleClass="aqi-value"/>
+                                </HBox>
+                                <Label fx:id="aqiDescLabel" text="Loading..." wrapText="true" styleClass="aqi-desc" alignment="CENTER" maxWidth="Infinity"/>
+                            </VBox>
+                        </HBox>
+                        
+                        <!-- Details Grid (Humidity, Wind, UV, etc.) -->
+                        <FlowPane hgap="15" vgap="15">
+                            <VBox styleClass="glass-card, detail-card">
+                                <Label text="Humidity" styleClass="card-title"/>
+                                <Label fx:id="humidityLabel" text="--%" styleClass="detail-value"/>
+                            </VBox>
+                            <VBox styleClass="glass-card, detail-card">
+                                <Label text="Wind" styleClass="card-title"/>
+                                <Label fx:id="windLabel" text="-- km/h" styleClass="detail-value"/>
+                            </VBox>
+                            <VBox styleClass="glass-card, detail-card">
+                                <Label text="Pressure" styleClass="card-title"/>
+                                <Label fx:id="pressureLabel" text="-- hPa" styleClass="detail-value"/>
+                            </VBox>
+                            <VBox styleClass="glass-card, detail-card">
+                                <Label text="UV Index" styleClass="card-title"/>
+                                <Label fx:id="uvLabel" text="--" styleClass="detail-value"/>
+                            </VBox>
+                            <VBox styleClass="glass-card, detail-card">
+                                <Label text="Visibility" styleClass="card-title"/>
+                                <Label fx:id="visibilityLabel" text="-- km" styleClass="detail-value"/>
+                            </VBox>
+                            <VBox styleClass="glass-card, detail-card">
+                                <Label text="Feels Like" styleClass="card-title"/>
+                                <Label fx:id="feelsLikeLabel" text="--°" styleClass="detail-value"/>
+                            </VBox>
+                        </FlowPane>
+                        
+                        <!-- Hourly Forecast -->
+                        <VBox styleClass="glass-card" spacing="10">
+                            <Label text="Today's Forecast" styleClass="card-title"/>
+                            <ScrollPane fitToHeight="true" vbarPolicy="NEVER" styleClass="horizontal-scroll">
+                                <HBox fx:id="hourlyForecastContainer" spacing="15"/>
+                            </ScrollPane>
+                        </VBox>
+                        
+                        <!-- 7-Day Forecast & Charts -->
+                        <HBox spacing="20">
+                            <VBox styleClass="glass-card" HBox.hgrow="ALWAYS" spacing="10" minWidth="300">
+                                <Label text="7-Day Forecast" styleClass="card-title"/>
+                                <VBox fx:id="dailyForecastContainer" spacing="10"/>
+                            </VBox>
+                            
+                            <VBox styleClass="glass-card" HBox.hgrow="ALWAYS" spacing="10">
+                                <Label text="Temperature Trend" styleClass="card-title"/>
+                                <LineChart fx:id="temperatureChart" createSymbols="false" animated="false">
+                                    <xAxis>
+                                        <CategoryAxis side="BOTTOM"/>
+                                    </xAxis>
+                                    <yAxis>
+                                        <NumberAxis side="LEFT"/>
+                                    </yAxis>
+                                </LineChart>
+                            </VBox>
+                        </HBox>
+                        
+                    </VBox>
+                </ScrollPane>
+                
+                <!-- Map View -->
+                <VBox fx:id="mapView" visible="false" spacing="20" styleClass="dashboard-container">
+                    <padding>
+                        <Insets top="30" right="40" bottom="30" left="40"/>
+                    </padding>
+                    <Label text="Weather Map" styleClass="location-title"/>
+                    <VBox styleClass="glass-card" VBox.vgrow="ALWAYS">
+                        <WebView fx:id="mapWebView" VBox.vgrow="ALWAYS" minHeight="400" minWidth="400"/>
+                    </VBox>
+                </VBox>
+                
+                <!-- Settings View -->
+                <VBox fx:id="settingsView" visible="false" spacing="20" styleClass="dashboard-container">
+                    <padding>
+                        <Insets top="30" right="40" bottom="30" left="40"/>
+                    </padding>
+                    <Label text="Settings" styleClass="location-title"/>
+                    <VBox styleClass="glass-card" spacing="15">
+                        <Label text="Preferences" styleClass="card-title"/>
+                        <HBox alignment="CENTER_LEFT" spacing="15">
+                            <Label text="Theme:" styleClass="detail-value" style="-fx-font-size: 16px; -fx-padding: 0;"/>
+                            <ComboBox fx:id="themeComboBox" styleClass="search-field"/>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="15">
+                            <Label text="Unit (Metric/Imperial):" styleClass="detail-value" style="-fx-font-size: 16px; -fx-padding: 0;"/>
+                            <ComboBox fx:id="unitComboBox" styleClass="search-field"/>
+                        </HBox>
+                        <Button fx:id="saveSettingsBtn" text="Save Settings" styleClass="icon-btn"/>
+                    </VBox>
+                </VBox>
+                
+                <!-- Loading Overlay -->
+                <StackPane fx:id="loadingOverlay" styleClass="loading-overlay" visible="false">
+                    <VBox alignment="CENTER" spacing="15">
+                        <ProgressIndicator />
+                        <Label text="Fetching weather data..." styleClass="loading-text"/>
+                    </VBox>
+                </StackPane>
+                
+            </StackPane>
+        </center>
+        
+    </BorderPane>
+    
+</StackPane>
